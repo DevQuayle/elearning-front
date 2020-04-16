@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {ReactElement} from 'react';
+import {BrowserRouter, Route, Switch} from "react-router-dom";
+import GuestLayout from "./layouts/Guest";
+import {useSelector} from "react-redux";
+import HeadmasterLayout from "./layouts/Headmaster";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = (): ReactElement => {
+    const {isLogged, user} = useSelector(({auth}) => auth);
+    let role = false
+    if (user.role){
+        role = user.role.key || false;
+    }
+    return (
+        <BrowserRouter>
+            <Switch>
+                {/*<Redirect from="/" to="/admin/dashboard"/>*/}
+
+                {isLogged && role === 'headmaster' && <Route path="/" render={props => <HeadmasterLayout {...props} />}/>}
+
+                {!isLogged && <Route path="/" render={props => <GuestLayout {...props} />}/>}
+
+            </Switch>
+        </BrowserRouter>
+    )
 }
+
 
 export default App;
